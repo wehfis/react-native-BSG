@@ -13,6 +13,9 @@ interface Props {
   item: MenuItemType;
   level?: number;
   onPress: (item: MenuItemType) => void;
+  onToggle: (item: MenuItemType) => void;
+  hasChildren: boolean;
+  isExpanded: boolean;
   containerStyle?: ViewStyle;
 }
 
@@ -22,33 +25,32 @@ const MenuItemComponent: React.FC<Props> = ({
   item,
   level = 0,
   onPress,
+  onToggle,
+  hasChildren,
+  isExpanded,
   containerStyle,
 }) => {
-  const children = item.menuItems ?? [];
-  const hasChildren = children.length > 0;
+  const handlePress = () => {
+    if (hasChildren) {
+      onToggle(item);
+    } else if (item.url) {
+      onPress(item);
+    }
+  };
 
   return (
     <View style={[styles.container, containerStyle]}>
       <TouchableOpacity
         style={[styles.row, { paddingLeft: 16 + level * INDENT }]}
-        onPress={() => item.url && onPress(item)}
-        disabled={!item.url}
+        onPress={handlePress}
+        disabled={!item.url && !hasChildren}
       >
         <Text style={styles.label}>
           {item.menuLabel}
           {item.secure ? ' (secure)' : ''}
+          {hasChildren ? (isExpanded ? ' ▼' : ' ▶') : ''}
         </Text>
       </TouchableOpacity>
-
-      {hasChildren &&
-        children.map((child) => (
-          <MenuItemComponent
-            key={child.id ?? `${child.menuLabel}-${child.url}`}
-            item={child}
-            level={level + 1}
-            onPress={onPress}
-          />
-        ))}
     </View>
   );
 };

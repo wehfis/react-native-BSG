@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
@@ -19,6 +19,10 @@ export const AppDrawerContent: React.FC<DrawerContentComponentProps> = (
   const dispatch = useAppDispatch();
 
   const items: MenuItemType[] = data?.menuItems ?? [];
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+
+  const getItemId = (item: MenuItemType) =>
+    item.id ?? `${item.menuLabel}-${item.url ?? 'no-url'}`;
 
   const handlePress = (item: MenuItemType) => {
     if (!item.url) {
@@ -31,6 +35,36 @@ export const AppDrawerContent: React.FC<DrawerContentComponentProps> = (
       title: item.menuLabel,
     });
   };
+
+  const handleToggle = (item: MenuItemType) => {
+    const id = getItemId(item);
+    setExpandedIds((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const renderItems = (sourceItems: MenuItemType[], level = 0): React.ReactNode =>
+    sourceItems.map((item) => {
+      const id = getItemId(item);
+      const children = item.menuItems ?? [];
+      const hasChildren = children.length > 0;
+      const isExpanded = !!expandedIds[id];
+
+      return (
+        <Fragment key={id}>
+          <MenuItem
+            item={item}
+            level={level}
+            onPress={handlePress}
+            onToggle={handleToggle}
+            hasChildren={hasChildren}
+            isExpanded={isExpanded}
+          />
+          {hasChildren && isExpanded && renderItems(children, level + 1)}
+        </Fragment>
+      );
+    });
 
   return (
     <DrawerContentScrollView
@@ -59,13 +93,7 @@ export const AppDrawerContent: React.FC<DrawerContentComponentProps> = (
 
       {items.length > 0 && (
         <View style={styles.menuContainer}>
-          {items.map((item) => (
-            <MenuItem
-              key={item.id ?? `${item.menuLabel}-${item.url}`}
-              item={item}
-              onPress={handlePress}
-            />
-          ))}
+          {renderItems(items)}
         </View>
       )}
     </DrawerContentScrollView>
