@@ -1,4 +1,7 @@
 # BSG Test App
+## DEMO
+
+https://github.com/user-attachments/assets/75c60b39-4e48-4391-8973-cce551d3a4af
 
 A minimal React Native app that wraps the Börse Stuttgart website with a native drawer menu and deep link support.
 
