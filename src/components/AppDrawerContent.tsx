@@ -18,16 +18,18 @@ export const AppDrawerContent: React.FC<DrawerContentComponentProps> = (
   const { data, isLoading, isError, refetch } = useGetMenuQuery();
   const dispatch = useAppDispatch();
 
-  const items: MenuItemType[] = Array.isArray(data)
-    ? data
-    : (data?.items ?? []);
+  const items: MenuItemType[] = data?.menuItems ?? [];
 
   const handlePress = (item: MenuItemType) => {
     if (!item.url) {
       return;
     }
-    dispatch(setSelectedItemId(item.id));
-    navigation.navigate('WebView', { url: item.url, title: item.title });
+    const id = item.id ?? `${item.menuLabel}-${item.url}`;
+    dispatch(setSelectedItemId(id));
+    navigation.navigate('WebView', {
+      url: item.url,
+      title: item.menuLabel,
+    });
   };
 
   return (
@@ -58,7 +60,11 @@ export const AppDrawerContent: React.FC<DrawerContentComponentProps> = (
       {items.length > 0 && (
         <View style={styles.menuContainer}>
           {items.map((item) => (
-            <MenuItem key={item.id} item={item} onPress={handlePress} />
+            <MenuItem
+              key={item.id ?? `${item.menuLabel}-${item.url}`}
+              item={item}
+              onPress={handlePress}
+            />
           ))}
         </View>
       )}

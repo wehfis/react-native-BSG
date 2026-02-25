@@ -24,7 +24,8 @@ const MenuItemComponent: React.FC<Props> = ({
   onPress,
   containerStyle,
 }) => {
-  const hasChildren = !!item.children && item.children.length > 0;
+  const children = item.menuItems ?? [];
+  const hasChildren = children.length > 0;
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -33,13 +34,16 @@ const MenuItemComponent: React.FC<Props> = ({
         onPress={() => item.url && onPress(item)}
         disabled={!item.url}
       >
-        <Text style={styles.label}>{item.title}</Text>
+        <Text style={styles.label}>
+          {item.menuLabel}
+          {item.secure ? ' (secure)' : ''}
+        </Text>
       </TouchableOpacity>
 
       {hasChildren &&
-        item.children!.map((child) => (
+        children.map((child) => (
           <MenuItemComponent
-            key={child.id}
+            key={child.id ?? `${child.menuLabel}-${child.url}`}
             item={child}
             level={level + 1}
             onPress={onPress}
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   label: {
-    color: colors.text,
+    color: '#ffffff',
     fontSize: 14,
   },
 });

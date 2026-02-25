@@ -1,11 +1,22 @@
+export interface MenuLinks {
+  registerUrl: string;
+  resetPasswordUrl: string;
+  searchUrl: string;
+  userTrackingUrl: string;
+}
+
 export interface MenuItem {
-    id: string;
-    title: string;
-    url?: string | null;
-    isSecure?: boolean;
-    children?: MenuItem[];
-  }
-  
-  export interface MenuConfiguration {
-    items: MenuItem[];
-  }
+  // optional synthetic id for UI purposes
+  id?: string;
+  type: 'MenuItem';
+  menuLabel: string;
+  url?: string | null;
+  secure?: boolean;
+  menuItems?: MenuItem[];
+}
+
+export interface MenuConfiguration {
+  type: 'AppAPI';
+  links: MenuLinks;
+  menuItems: MenuItem[];
+}
