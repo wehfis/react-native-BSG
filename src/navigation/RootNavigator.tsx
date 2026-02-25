@@ -23,6 +23,9 @@ export const RootNavigator = () => {
         drawerContent={(props) => <AppDrawerContent {...props} />}
         screenOptions={({ navigation, route }) => {
           const routeParams = (route?.params ?? {}) as { url?: string };
+          const currentUrl = routeParams.url;
+          const isHome = !currentUrl || currentUrl === BASE_WEB_URL;
+
           return {
             headerShown: true,
             headerStyle: { backgroundColor: colors.primary },
@@ -49,18 +52,22 @@ export const RootNavigator = () => {
               <DrawerToggleButton tintColor={tintColor} />
             ),
             headerLeft: ({ tintColor }) =>
-              navigation.canGoBack() ? (
-                <TouchableOpacity
-                  onPress={() => navigation.goBack()}
-                  style={{ paddingHorizontal: 8 }}
-                >
-                  <Ionicons
-                    name="arrow-back"
-                    size={22}
-                    color={tintColor ?? '#ffffff'}
-                  />
-                </TouchableOpacity>
-              ) : null,
+              isHome
+                ? null
+                : (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('WebView', { url: BASE_WEB_URL })
+                    }
+                    style={{ paddingHorizontal: 8 }}
+                  >
+                    <Ionicons
+                      name="arrow-back"
+                      size={22}
+                      color={tintColor ?? '#ffffff'}
+                    />
+                  </TouchableOpacity>
+                ),
           };
         }}
       >
