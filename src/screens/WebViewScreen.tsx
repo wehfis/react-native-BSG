@@ -1,14 +1,15 @@
 import React from 'react';
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import type { WebViewScreenProps } from '../navigation/types';
 import { colors } from '../constants/colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const WebViewScreen: React.FC<WebViewScreenProps> = ({ route }) => {
   const { url } = route.params;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom', 'left', 'right']}>
       <WebView
         source={{ uri: url }}
         userAgent="bsgapp"
@@ -22,7 +23,7 @@ export const WebViewScreen: React.FC<WebViewScreenProps> = ({ route }) => {
           console.warn('WebView error', syntheticEvent.nativeEvent);
         }}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
