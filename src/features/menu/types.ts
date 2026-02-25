@@ -6,7 +6,6 @@ export interface MenuLinks {
 }
 
 export interface MenuItem {
-  // optional synthetic id for UI purposes
   id?: string;
   type: 'MenuItem';
   menuLabel: string;
